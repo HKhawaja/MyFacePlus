@@ -1,0 +1,23 @@
+In mainp4, we have training and test data separated into np arrays
+
+Variables are, in order: Hour1, Hour2, Hour3, numPosts
+
+Look for blanks
+
+Remove Null island (with lat and lon as 0.0)
+Possibly standardize latitude and longitude
+
+First step: Try some regressors on X_tr and y_tr and test on X_te
+    Have to deal with latitude and longitude separately because we have to predict 1 feature at a time
+    Or use a regressor that can predict the multi-value (we'll look for them)
+
+Next step: Try using graph.txt somehow? It has all the links
+We probably need to clean up graph.txt since we have users in graph.txt who are not in the original dataset
+
+Potentially: Median latitude / longitude of users connected to a user as an explanatory variable
+
+Try neural network, since we have so much data (TensorFlow)
+
+We want to try everything both with and without graphs
+
+Cross-validation?

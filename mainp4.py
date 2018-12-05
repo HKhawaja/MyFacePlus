@@ -17,21 +17,32 @@ if __name__ == "__main__":
     # there are 7 variables
 
     y_tr = np.empty((len(tr_init), 2))
-    temp = tr_init[:, 5]
+    temp = tr_init[:, 4]
     y_tr[:, 0] = temp
-    temp2 = tr_init[:, 6]
+    temp2 = tr_init[:, 5]
     y_tr[:, 1] = temp2
 
-    X_tr = np.empty((len(tr_init), 5))
-    for a in range(5):
-        temp = tr_init[:, a]
+    X_tr = np.empty((len(tr_init), 4)) # Does not take id as a variable
+    for a in range(3): # this weird range plus the end is because of how the dataset was set up
+        temp = tr_init[:, a+1]
         X_tr[:, a] = temp
+    X_tr[:, 3] = tr_init[:, 6]
 
     te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
 
-    X_te = np.empty((len(te_init), 5))
-    for a in range(5):
-        temp = te_init[:, a]
+    X_te = np.empty((len(te_init), 4))
+    for a in range(4):
+        temp = te_init[:, a+1]
         X_te[:, a] = temp
 
-    print(len(X_tr), len(X_te))
+    # Time for some data cleaning
+    # Remove users on "Null island (1057 users)
+    counts = []
+    for k in range(len(y_tr)):
+        if y_tr[k][0] == 0 and y_tr[k][1] == 0:
+            counts.append(k)
+    for a in range(len(counts)-1, -1, -1): # count backwards
+        k = counts[a]
+        y_tr = np.delete(y_tr, k, 0)
+        X_tr = np.delete(X_tr, k, 0)
+    #Now there are no elements left on null island
