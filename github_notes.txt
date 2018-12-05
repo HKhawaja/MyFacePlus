@@ -1,0 +1,6 @@
+Open virtual environment with .\venv\Scripts\activate
+
+Committing:
+git add -A
+git commit -m "Notes"
+git push
