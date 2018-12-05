@@ -4,3 +4,8 @@ Committing:
 git add -A
 git commit -m "Notes"
 git push
+
+Getting the other person's stuff:
+git pull
+
+Leave virtual environment with deactivate
