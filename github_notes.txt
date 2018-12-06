@@ -9,3 +9,9 @@ Getting the other person's stuff:
 git pull
 
 Leave virtual environment with deactivate
+
+Every time you open the code and want to start working:
+
+enter virtual environment
+git pull
+pip install -r requirements.txt
