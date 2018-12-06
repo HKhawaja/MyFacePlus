@@ -1,10 +1,7 @@
 from numpy import loadtxt
 import numpy as np
 import sklearn
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-# SVC is for Support Vector Classifier -- we called it SVM in class
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LinearRegression
 
 if __name__ == "__main__":
     assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
@@ -12,25 +9,31 @@ if __name__ == "__main__":
     #tr = tr_file.read().split(',')
     #print(tr)
 
-    tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False)
+    tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False) # Full training set from txt file
 
     # there are 7 variables
 
-    y_tr = np.empty((len(tr_init), 2))
+    y_tr = np.empty((len(tr_init), 2)) # Create empty array which will hold the response variable
     temp = tr_init[:, 4]
     y_tr[:, 0] = temp
     temp2 = tr_init[:, 5]
     y_tr[:, 1] = temp2
+    # The above 4 lines take the correct values (latitude and longitude) and add them to the response np array
 
     X_tr = np.empty((len(tr_init), 4)) # Does not take id as a variable
+    X_tr_ids = np.array(tr_init[:, 0]).astype(int) # This is a list of ids that we may need later
     for a in range(3): # this weird range plus the end is because of how the dataset was set up
         temp = tr_init[:, a+1]
         X_tr[:, a] = temp
     X_tr[:, 3] = tr_init[:, 6]
+    # X_tr is now set up as: (Hour1, Hour2, Hour3, numPosts)
 
     te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
 
+    # Then, we do the same thing with the test data; start at column 1 and get a 4-column dataset with
+    # the columns as hour1, Hour2, Hour3, numposts
     X_te = np.empty((len(te_init), 4))
+    X_te_ids = np.array(te_init[:, 0]).astype(int) # This is a list of ids to use later
     for a in range(4):
         temp = te_init[:, a+1]
         X_te[:, a] = temp
@@ -45,4 +48,24 @@ if __name__ == "__main__":
         k = counts[a]
         y_tr = np.delete(y_tr, k, 0)
         X_tr = np.delete(X_tr, k, 0)
-    #Now there are no elements left on null island
+    # Now there are no elements left on null island
+
+    def linearRegressor(tr_X, tr_y, te_X): # Code to play around with for performing a linear regression
+        linearRegression = LinearRegression(normalize=True) #creates a linear regression object
+        linear_tr = linearRegression.fit(tr_X, tr_y)
+        preds = linearRegression.predict(te_X)
+        return preds
+    # The above method uses a simple linear model, which we can edit or make new methods to make more complex,
+    # and outputs the linear model's prediction
+
+    # Below, I'm going to createa n output; we can alter which methods we use when we change which learners we use
+    y_tr_lat = y_tr[:, 0]
+    y_tr_long = y_tr[:, 1]
+    y_lat_preds = np.around(linearRegressor(X_tr, y_tr_lat, X_te), decimals=3)
+    y_long_preds = np.around(linearRegressor(X_tr, y_tr_long, X_te), decimals=3) # This creates predictions for lat and long
+    preds_output = np.ndarray((1000, 3), dtype=object) # this creates an array that can hold ints and floats
+    preds_output[:, 0] = X_te_ids
+    preds_output[:, 1] = y_lat_preds
+    preds_output[:, 2] = y_long_preds
+    print(preds_output)
+    np.savetxt('output1.txt', preds_output, delimiter=',', header="Id,Lat,Lon") # This saves as a text file
