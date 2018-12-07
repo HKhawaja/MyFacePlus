@@ -2,6 +2,7 @@ from numpy import loadtxt
 import numpy as np
 from learners import *
 from helpers import *
+from sklearn.ensemble import BaggingRegressor
 
 def LinearRegressionOutput(helper):
     # clean_up_graph(posts_cleanup())
@@ -64,3 +65,7 @@ if __name__ == "__main__":
     medians_only_gradient_regression = GradientRegressionOutput(posts_cleanup_only_median())
     np.savetxt('gradientBoostingOnlyMedians.txt', medians_only_gradient_regression, delimiter=',',
                fmt='%1.3f', header="Id,Lat,Lon")
+
+    # added bagging to regression
+    bagged_regression = BaggingRegressor(GradientRegressionOutput(posts_cleanup_only_median()))
+    np.savetxt('bagging_regression.txt', bagged_regression, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
