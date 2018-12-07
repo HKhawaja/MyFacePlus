@@ -7,11 +7,9 @@ def clean_up_graph(ids_lat_lng):
     graph = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
 
     # remove from graph any line on which either or both ids is/are not found in our original list of posts
-    print('cleaning up graph')
     for i in range(len(graph)-1, -1, -1):
         if graph[i][0] not in ids_lat_lng or graph[i][1] not in ids_lat_lng:
             graph = np.delete(graph, i, 0)
-    print(graph)
 
     # friend_dict: key = id and value = list of friend ids
     friend_dict = {}
