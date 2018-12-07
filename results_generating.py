@@ -50,4 +50,4 @@ def GradientRegressionOutput(helper):
 
 if __name__ == "__main__":
     assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
-    GradientRegressionOutput(posts_cleanup_medians())
+    GradientRegressionOutput(posts_cleanup())

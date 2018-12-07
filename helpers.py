@@ -7,6 +7,7 @@ def clean_up_graph(test_set, ids_lat_lng):
     graph = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
     graph_te = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
     X_te_ids = test_set[3]
+    # Print statements show that these are indeed the same
 
     # remove from graph any line on which either or both ids is/are not found in our original list of posts
     # for test ids, remove any line which does not have first entry as test id and second as training id
@@ -17,11 +18,13 @@ def clean_up_graph(test_set, ids_lat_lng):
     for i in range(len(graph_te)-1, -1, -1):
         if graph_te[i][0] not in X_te_ids or graph_te[i][1] not in ids_lat_lng:
             graph_te = np.delete(graph_te, i, 0)
+    # 356268 elements in graph, 6523 in teh test graph
+    # And all the  elements in the test graph second column are in the training set as they should be
 
     # friend_dict: key = id and value = list of friend ids
     friend_dict = {}
     friend_dict_te = {}
-    for i in range(len(graph) -1, -1, -1):
+    for i in range(len(graph) - 1, -1, -1):
         source = graph[i][0]
         dest = graph[i][1]
         if source not in friend_dict:
@@ -43,6 +46,7 @@ def clean_up_graph(test_set, ids_lat_lng):
             dests = friend_dict_te[source]
             dests.append(dest_te)
             friend_dict_te[source] = dests
+
 
     # if id is present in original set but not in graph, it has 0 friends
     for id in ids_lat_lng:
