@@ -1,5 +1,6 @@
 from numpy import loadtxt
 import numpy as np
+from learners import *
 import sklearn
 from sklearn.linear_model import LinearRegression
 
@@ -89,37 +90,14 @@ def posts_cleanup():
     for i in range(len(y_tr)):
         ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
 
-    return ids_lat_lng
-
-
-def linearRegressor(tr_X, tr_y, te_X):  # Code to play around with for performing a linear regression
-    linearRegression = LinearRegression(normalize=True)  # creates a linear regression object
-    linear_tr = linearRegression.fit(tr_X, tr_y)
-    preds = linearRegression.predict(te_X)
-    return preds
-
+    # return ids_lat_lng
+    return [X_tr, y_tr, X_te, X_te_ids]
 
 # The above method uses a simple linear model, which we can edit or make new methods to make more complex,
 # and outputs the linear model's prediction
-
-# Below, I'm going to createa n output; we can alter which methods we use when we change which learners we use
-# y_tr_lat = y_tr[:, 0]
-# y_tr_long = y_tr[:, 1]
-# y_lat_preds = np.around(linearRegressor(X_tr, y_tr_lat, X_te), decimals=3)
-# y_long_preds = np.around(linearRegressor(X_tr, y_tr_long, X_te),
-#                          decimals=3)  # This creates predictions for lat and long
-# preds_output = np.ndarray((1000, 3), dtype=object)  # this creates an array that can hold ints and floats
-# preds_output[:, 0] = X_te_ids
-# preds_output[:, 1] = y_lat_preds
-# preds_output[:, 2] = y_long_preds
-# print(preds_output)
-# np.savetxt('output1.txt', preds_output, delimiter=',', header="Id,Lat,Lon")  # This saves as a text file
-
 
 if __name__ == "__main__":
     assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
     #tr_file = open("posts_train.txt", "r")
     #tr = tr_file.read().split(',')
     #print(tr)
-    # clean_up_graph(posts_cleanup())
-
