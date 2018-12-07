@@ -1,6 +1,5 @@
 from numpy import loadtxt
 import numpy as np
-from learners import *
 import sklearn
 from sklearn.linear_model import LinearRegression
 
@@ -91,17 +90,12 @@ def posts_cleanup():
         ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
 
     # return ids_lat_lng
-    #return [X_tr, y_tr, X_te, X_te_ids]
-    return ids_lat_lng
+    return [X_tr, y_tr, X_te, X_te_ids]
+    #return ids_lat_lng
 
 """
 have you seen this? https://scikit-learn.org/stable/modules/multiclass.html#multioutput-regression 
 """
-def linearRegressor(tr_X, tr_y, te_X):  # Code to play around with for performing a linear regression
-    linearRegression = LinearRegression(normalize=True)  # creates a linear regression object
-    linear_tr = linearRegression.fit(tr_X, tr_y)
-    preds = linearRegression.predict(te_X)
-    return preds
 
 # The above method uses a simple linear model, which we can edit or make new methods to make more complex,
 # and outputs the linear model's prediction
