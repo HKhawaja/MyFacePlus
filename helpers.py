@@ -99,6 +99,22 @@ def clean_up_graph(test_set, ids_lat_lng):
     np.savetxt('ids_lat_lng_tr.txt', X_tr_lat_lng, delimiter=',')
     np.savetxt('ids_lat_lng_te.txt', X_tr_lat_lng, delimiter=',')
 
+def remove_null_island(tr_X, tr_y, tr_X_ids):
+
+    # Remove users on "Null island" (1057 users) from X_tr, X_tr_ids and y_tr
+    # X_tr, X_tr_ids and y_tr have same length
+    counts = []
+    for k in range(len(tr_y)):
+        if tr_y[k][0] == 0 and tr_y[k][1] == 0:
+            counts.append(k)
+
+    for a in range(len(counts)-1, -1, -1): # count backwards
+        k = counts[a]
+        tr_y = np.delete(tr_y, k, 0)
+        tr_X = np.delete(tr_X, k, 0)
+        tr_X_ids = np.delete(tr_X_ids, k, 0)
+    return tr_X, tr_y, tr_X_ids
+
 def posts_cleanup():
     tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False) # Full training set from txt file
 
@@ -130,19 +146,52 @@ def posts_cleanup():
         temp = te_init[:, a+1]
         X_te[:, a] = temp
 
-    # Remove users on "Null island" (1057 users) from X_tr, X_tr_ids and y_tr
-    # X_tr, X_tr_ids and y_tr have same length
-    counts = []
-    for k in range(len(y_tr)):
-        if y_tr[k][0] == 0 and y_tr[k][1] == 0:
-            counts.append(k)
+    X_tr, y_tr, X_tr_ids = remove_null_island(X_tr, y_tr, X_tr_ids)
 
-    for a in range(len(counts)-1, -1, -1): # count backwards
-        k = counts[a]
-        y_tr = np.delete(y_tr, k, 0)
-        X_tr = np.delete(X_tr, k, 0)
-        X_tr_ids = np.delete(X_tr_ids, k, 0)
+    # ids_lat_lng: key: id and value: (latitude, longitude) for training set
+    ids_lat_lng = {}
+    for i in range(len(y_tr)):
+        ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
 
+    return [X_tr, y_tr, X_te, X_te_ids], ids_lat_lng
+
+def posts_cleanup_medians():
+    # This method outputs a training and test set including the median latitude and longitude of each user's friends
+    tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False) # Full training set from txt file
+    tr_lat_lng_friends = loadtxt("ids_lat_lng_tr.txt", comments="#", delimiter=",",  unpack=False)
+    te_lat_lng_friends = loadtxt("ids_lat_lng_te.txt", comments='#', delimiter=",", unpack=False)
+    # there are 7 variables
+    # y_tr: matrix with cols: latitude, longitude and row for each id
+    y_tr = np.empty((len(tr_init), 2)) # Create empty array which will hold the response variable
+    temp = tr_init[:, 4]
+    y_tr[:, 0] = temp
+    temp2 = tr_init[:, 5]
+    y_tr[:, 1] = temp2
+    # The above 4 lines take the correct values (latitude and longitude) and add them to the response np array
+
+    # X_tr: (Hour1, Hour2, Hour3, numPosts)
+    X_tr_ids = np.array(tr_init[:, 0]).astype(int) # This is a list of ids that we may need later
+    X_tr = np.empty((len(tr_init), 6))
+    for a in range(3): # this weird range plus the end is because of how the dataset was set up
+        temp = tr_init[:, a+1]
+        X_tr[:, a] = temp
+
+    X_tr[:, 3] = tr_init[:, 6]
+    X_tr, y_tr, X_tr_ids = remove_null_island(X_tr, y_tr, X_tr_ids)
+    X_tr[:, 4] = tr_lat_lng_friends[:, 1]
+    X_tr[:, 5] = tr_lat_lng_friends[:, 2] #these lines add the median lat, long of friends as variables
+
+    te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
+
+    # Then, we do the same thing with the test data; start at column 1 and get a 6-column dataset with
+    # the columns as hour1, Hour2, Hour3, numposts, med_lat, med_long
+    X_te_ids = np.array(te_init[:, 0]).astype(int) # This is a list of ids to use later
+    X_te = np.empty((len(te_init), 6))
+    for a in range(4):
+        temp = te_init[:, a+1]
+        X_te[:, a] = temp
+    X_te[:, 4] = te_lat_lng_friends[:, 1] #this should be all the test users and their friends' median lat and long
+    X_te[:, 5] = te_lat_lng_friends[:, 2]
     # ids_lat_lng: key: id and value: (latitude, longitude) for training set
     ids_lat_lng = {}
     for i in range(len(y_tr)):
