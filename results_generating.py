@@ -21,8 +21,7 @@ def LinearRegressionOutput(helper):
     preds_output[:, 0] = X_te_ids
     preds_output[:, 1] = y_lat_preds
     preds_output[:, 2] = y_long_preds
-    print(preds_output)
-    np.savetxt('RegressionOutput.txt', preds_output, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    return preds_output
     # This saves as a text file
     # This actually made an output and finished 8th with a score of 58
 
@@ -42,12 +41,26 @@ def GradientRegressionOutput(helper):
     preds_output[:, 0] = X_te_ids
     preds_output[:, 1] = y_lat_preds
     preds_output[:, 2] = y_long_preds
-    print(preds_output)
-    np.savetxt('gradientBoostingOutput.txt', preds_output, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
-    # This saves as a text file
-    # This actually made an output and finished 7th with a score of 46
+    return preds_output
+    # this is called in main method to create scores
 
 
 if __name__ == "__main__":
-    assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
-    GradientRegressionOutput(posts_cleanup())
+    # assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
+    # linear_regression = LinearRegressionOutput(posts_cleanup())
+    # np.savetxt('RegressionOutput.txt', linear_regression, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    # # This is linear regression without graphs; gives score of ~58
+    #
+    # gradient_regression = GradientRegressionOutput(posts_cleanup())
+    # np.savetxt('gradientBoostingOutput.txt', gradient_regression,
+    #            delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    # # This is gradient regression without graphs; gives score of ~46
+    #
+    # medians_gradient_regression = GradientRegressionOutput(posts_cleanup_medians())
+    # np.savetxt('gradientBoostingOutputMedians.txt', medians_gradient_regression,
+    #            delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    # # RThis is gradient regression with median lat and lng; gives score of 25.376
+
+    medians_only_gradient_regression = GradientRegressionOutput(posts_cleanup_only_median())
+    np.savetxt('gradientBoostingOnlyMedians.txt', medians_only_gradient_regression, delimiter=',',
+               fmt='%1.3f', header="Id,Lat,Lon")

@@ -36,16 +36,16 @@ def clean_up_graph(test_set, ids_lat_lng):
             friend_dict[source] = dests
 
     # create friend list for test ids
-    for i in range(len(graph_te) -1, -1,-1):
+    for i in range(len(graph_te) - 1, -1, -1):
         source_te = graph_te[i][0]
         dest_te = graph_te[i][1]
         if source_te not in friend_dict_te:
             dests = [dest_te]
-            friend_dict_te[source] = dests
+            friend_dict_te[source_te] = dests
         else:
-            dests = friend_dict_te[source]
+            dests = friend_dict_te[source_te]
             dests.append(dest_te)
-            friend_dict_te[source] = dests
+            friend_dict_te[source_te] = dests
 
 
     # if id is present in original set but not in graph, it has 0 friends
@@ -174,8 +174,11 @@ def posts_cleanup_medians():
     temp2 = tr_init[:, 5]
     y_tr[:, 1] = temp2
     # The above 4 lines take the correct values (latitude and longitude) and add them to the response np array
+    tr_lat_lng_friends = np.nan_to_num(tr_lat_lng_friends)
+    te_lat_lng_friends = np.nan_to_num(te_lat_lng_friends)
+    # The above takes all null values and sets them to 0 (for people with no friends)
 
-    # X_tr: (Hour1, Hour2, Hour3, numPosts)
+    # X_tr: (Hour1, Hour2, Hour3, numPosts, med_lat, med_lng of friends)
     X_tr_ids = np.array(tr_init[:, 0]).astype(int) # This is a list of ids that we may need later
     X_tr = np.empty((len(tr_init), 6))
     for a in range(3): # this weird range plus the end is because of how the dataset was set up
@@ -185,7 +188,8 @@ def posts_cleanup_medians():
     X_tr[:, 3] = tr_init[:, 6]
     X_tr, y_tr, X_tr_ids = remove_null_island(X_tr, y_tr, X_tr_ids)
     X_tr[:, 4] = tr_lat_lng_friends[:, 1]
-    X_tr[:, 5] = tr_lat_lng_friends[:, 2] #these lines add the median lat, long of friends as variables
+    X_tr[:, 5] = tr_lat_lng_friends[:, 2]
+    # these lines add the median lat, long of friends as variables
 
     te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
 
@@ -205,12 +209,49 @@ def posts_cleanup_medians():
 
     return [X_tr, y_tr, X_te, X_te_ids], ids_lat_lng
 
+def posts_cleanup_only_median():
+    # This method outputs a training and test set with only the median latitude and longitude
+    # of each user's friends as the input variables
+    tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False) # Full training set from txt file
+    tr_lat_lng_friends = loadtxt("ids_lat_lng_tr.txt", comments="#", delimiter=",",  unpack=False)
+    te_lat_lng_friends = loadtxt("ids_lat_lng_te.txt", comments='#', delimiter=",", unpack=False)
+    # there are 7 variables
+    # y_tr: matrix with cols: latitude, longitude and row for each id
+    y_tr = np.empty((len(tr_init), 2)) # Create empty array which will hold the response variable
+    temp = tr_init[:, 4]
+    y_tr[:, 0] = temp
+    temp2 = tr_init[:, 5]
+    y_tr[:, 1] = temp2
+    # The above 4 lines take the correct values (latitude and longitude) and add them to the response np array
+    tr_lat_lng_friends = np.nan_to_num(tr_lat_lng_friends)
+    te_lat_lng_friends = np.nan_to_num(te_lat_lng_friends)
+    # The above takes all null values and sets them to 0 (for people with no friends)
+
+    # X_tr: (med_lat, med_lng of friends)
+    X_tr_ids = np.array(tr_init[:, 0]).astype(int) # This is a list of ids that we may need later
+    X_tr = np.empty((len(tr_init), 2))
+    X_tr, y_tr, X_tr_ids = remove_null_island(X_tr, y_tr, X_tr_ids)
+    X_tr[:, 0] = tr_lat_lng_friends[:, 1]
+    X_tr[:, 1] = tr_lat_lng_friends[:, 2]
+    # these lines add the median lat, long of friends as variables
+
+    te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
+
+    # Then, we do the same thing with the test data; start at column 1 and get a 6-column dataset with
+    # the columns as med_lat, med_long
+    X_te_ids = np.array(te_init[:, 0]).astype(int) # This is a list of ids to use later
+    X_te = np.empty((len(te_init), 2))
+    X_te[:, 0] = te_lat_lng_friends[:, 1] #this should be all the test users and their friends' median lat and long
+    X_te[:, 1] = te_lat_lng_friends[:, 2]
+    # ids_lat_lng: key: id and value: (latitude, longitude) for training set
+    ids_lat_lng = {}
+    for i in range(len(y_tr)):
+        ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
+
+    return [X_tr, y_tr, X_te, X_te_ids], ids_lat_lng
 """
 have you seen this? https://scikit-learn.org/stable/modules/multiclass.html#multioutput-regression 
 """
-
-# The above method uses a simple linear model, which we can edit or make new methods to make more complex,
-# and outputs the linear model's prediction
 
 if __name__ == "__main__":
     assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
