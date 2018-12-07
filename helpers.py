@@ -99,7 +99,7 @@ def clean_up_graph(test_set, ids_lat_lng):
         i = i + 1
 
     np.savetxt('ids_lat_lng_tr.txt', X_tr_lat_lng, delimiter=',')
-    np.savetxt('ids_lat_lng_te.txt', X_tr_lat_lng, delimiter=',')
+    np.savetxt('ids_lat_lng_te.txt', X_te_lat_lng, delimiter=',')
 
 def remove_null_island(tr_X, tr_y, tr_X_ids):
 
