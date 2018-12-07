@@ -13,6 +13,8 @@ def clean_up_graph(test_set, ids_lat_lng):
     for i in range(len(graph)-1, -1, -1):
         if graph[i][0] not in ids_lat_lng or graph[i][1] not in ids_lat_lng:
             graph = np.delete(graph, i, 0)
+
+    for i in range(len(graph_te)-1, -1, -1):
         if graph_te[i][0] not in X_te_ids or graph_te[i][1] not in ids_lat_lng:
             graph_te = np.delete(graph_te, i, 0)
 
