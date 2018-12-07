@@ -28,6 +28,11 @@ def clean_up_graph(ids_lat_lng):
             dests.append(dest)
             friend_dict[source] = dests
 
+    # if id is present in original set but not in graph, it has 0 friends
+    for id in ids_lat_lng:
+        if id not in friend_dict:
+            friend_dict[id] = []
+
     # find median latitude and longitude of each id's friends
     # median_lat_lng_friends: dict where key = id and value = tuple of median of latitude and longitude of friends
     median_lat_lng_friends = {}
