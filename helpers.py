@@ -3,16 +3,22 @@ import numpy as np
 import sklearn
 
 
-def clean_up_graph(ids_lat_lng):
+def clean_up_graph(test_set, ids_lat_lng):
     graph = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
+    graph_te = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
+    X_te_ids = test_set[3]
 
     # remove from graph any line on which either or both ids is/are not found in our original list of posts
+    # for test ids, remove any line which does not have first entry as test id and second as training id
     for i in range(len(graph)-1, -1, -1):
         if graph[i][0] not in ids_lat_lng or graph[i][1] not in ids_lat_lng:
             graph = np.delete(graph, i, 0)
+        if graph_te[i][0] not in X_te_ids or graph_te[i][1] not in ids_lat_lng:
+            graph_te = np.delete(graph_te, i, 0)
 
     # friend_dict: key = id and value = list of friend ids
     friend_dict = {}
+    friend_dict_te = {}
     for i in range(len(graph) -1, -1, -1):
         source = graph[i][0]
         dest = graph[i][1]
@@ -24,10 +30,27 @@ def clean_up_graph(ids_lat_lng):
             dests.append(dest)
             friend_dict[source] = dests
 
+    # create friend list for test ids
+    for i in range(len(graph_te) -1, -1,-1):
+        source_te = graph_te[i][0]
+        dest_te = graph_te[i][1]
+        if source_te not in friend_dict_te:
+            dests = [dest_te]
+            friend_dict_te[source] = dests
+        else:
+            dests = friend_dict_te[source]
+            dests.append(dest_te)
+            friend_dict_te[source] = dests
+
     # if id is present in original set but not in graph, it has 0 friends
     for id in ids_lat_lng:
         if id not in friend_dict:
             friend_dict[id] = []
+
+    # likewise for test ids
+    for id in X_te_ids:
+        if id not in friend_dict_te:
+            friend_dict_te[id] = []
 
     # find median latitude and longitude of each id's friends
     # median_lat_lng_friends: dict where key = id and value = tuple of median of latitude and longitude of friends
@@ -42,6 +65,39 @@ def clean_up_graph(ids_lat_lng):
             longs.append(lng)
         median_lat_lng_friends[id] = (np.median(lats), np.median(longs))
 
+    # likewise for test ids
+    # key insight is that only want friends of test id that were present in training set
+    median_lat_lng_friends_te = {}
+    for id in X_te_ids:
+        friends = friend_dict_te[id]
+        lats_te = []
+        longs_te = []
+        for friend in friends:
+            lat, lng = ids_lat_lng[friend]
+            lats_te.append(lat)
+            longs_te.append(lng)
+        median_lat_lng_friends_te[id] = (np.median(lats_te), np.median(longs_te))
+
+    X_tr_lat_lng = np.empty((len(ids_lat_lng),3))
+    X_te_lat_lng = np.empty((len(X_te_ids),3))
+    i = 0
+    for id in ids_lat_lng:
+        lat, lng = median_lat_lng_friends[id]
+        X_tr_lat_lng[i][0] = id
+        X_tr_lat_lng[i][1] = lat
+        X_tr_lat_lng[i][2] = lng
+        i = i+1
+
+    i = 0
+    for id in X_te_ids:
+        lat_te, lng_te = median_lat_lng_friends_te[id]
+        X_te_lat_lng[i][0] = id
+        X_te_lat_lng[i][1] = lat_te
+        X_te_lat_lng[i][2] = lng_te
+        i = i + 1
+
+    np.savetxt('ids_lat_lng_tr.txt', X_tr_lat_lng, delimiter=',')
+    np.savetxt('ids_lat_lng_te.txt', X_tr_lat_lng, delimiter=',')
 
 def posts_cleanup():
     tr_init = loadtxt("posts_train.txt", comments="#", delimiter=",", unpack=False) # Full training set from txt file
@@ -106,4 +162,5 @@ if __name__ == "__main__":
     #tr_file = open("posts_train.txt", "r")
     #tr = tr_file.read().split(',')
     #print(tr)
-    clean_up_graph(posts_cleanup())
+    a, b = posts_cleanup()
+    clean_up_graph(a, b)
