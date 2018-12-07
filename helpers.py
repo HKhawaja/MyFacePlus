@@ -8,11 +8,9 @@ def clean_up_graph(ids_lat_lng):
     graph = loadtxt("graph.txt", comments='#', delimiter="\t", unpack=False)
 
     # remove from graph any line on which either or both ids is/are not found in our original list of posts
-    print('cleaning up graph')
     for i in range(len(graph)-1, -1, -1):
         if graph[i][0] not in ids_lat_lng or graph[i][1] not in ids_lat_lng:
             graph = np.delete(graph, i, 0)
-    print(graph)
 
     # friend_dict: key = id and value = list of friend ids
     friend_dict = {}
@@ -26,6 +24,11 @@ def clean_up_graph(ids_lat_lng):
             dests = friend_dict[source]
             dests.append(dest)
             friend_dict[source] = dests
+
+    # if id is present in original set but not in graph, it has 0 friends
+    for id in ids_lat_lng:
+        if id not in friend_dict:
+            friend_dict[id] = []
 
     # find median latitude and longitude of each id's friends
     # median_lat_lng_friends: dict where key = id and value = tuple of median of latitude and longitude of friends
