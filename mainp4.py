@@ -91,7 +91,9 @@ def posts_cleanup():
 
     return ids_lat_lng
 
-
+"""
+have you seen this? https://scikit-learn.org/stable/modules/multiclass.html#multioutput-regression 
+"""
 def linearRegressor(tr_X, tr_y, te_X):  # Code to play around with for performing a linear regression
     linearRegression = LinearRegression(normalize=True)  # creates a linear regression object
     linear_tr = linearRegression.fit(tr_X, tr_y)
@@ -121,5 +123,5 @@ if __name__ == "__main__":
     #tr_file = open("posts_train.txt", "r")
     #tr = tr_file.read().split(',')
     #print(tr)
-    # clean_up_graph(posts_cleanup())
+    clean_up_graph(posts_cleanup())
 
