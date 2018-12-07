@@ -1,7 +1,6 @@
 from numpy import loadtxt
 import numpy as np
 import sklearn
-from sklearn.linear_model import LinearRegression
 
 
 def clean_up_graph(ids_lat_lng):
@@ -57,19 +56,20 @@ def posts_cleanup():
     # The above 4 lines take the correct values (latitude and longitude) and add them to the response np array
 
     # X_tr: (Hour1, Hour2, Hour3, numPosts)
-    X_tr = np.empty((len(tr_init), 4)) # Does not take id as a variable
     X_tr_ids = np.array(tr_init[:, 0]).astype(int) # This is a list of ids that we may need later
+    X_tr = np.empty((len(tr_init), 4))
     for a in range(3): # this weird range plus the end is because of how the dataset was set up
         temp = tr_init[:, a+1]
         X_tr[:, a] = temp
+
     X_tr[:, 3] = tr_init[:, 6]
 
     te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
 
     # Then, we do the same thing with the test data; start at column 1 and get a 4-column dataset with
     # the columns as hour1, Hour2, Hour3, numposts
-    X_te = np.empty((len(te_init), 4))
     X_te_ids = np.array(te_init[:, 0]).astype(int) # This is a list of ids to use later
+    X_te = np.empty((len(te_init), 4))
     for a in range(4):
         temp = te_init[:, a+1]
         X_te[:, a] = temp
@@ -92,9 +92,7 @@ def posts_cleanup():
     for i in range(len(y_tr)):
         ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
 
-    # return ids_lat_lng
-    return [X_tr, y_tr, X_te, X_te_ids]
-    #return ids_lat_lng
+    return [X_tr, y_tr, X_te, X_te_ids], ids_lat_lng
 
 """
 have you seen this? https://scikit-learn.org/stable/modules/multiclass.html#multioutput-regression 

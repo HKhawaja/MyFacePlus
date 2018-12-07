@@ -1,6 +1,5 @@
 import sklearn
 from sklearn.linear_model import LinearRegression
-from sklearn.multioutput import MultiOutputRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 
 def linearRegressor(tr_X, tr_y, te_X):  # Code to play around with for performing a linear regression

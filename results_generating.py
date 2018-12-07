@@ -6,7 +6,7 @@ from helpers import *
 def LinearRegressionOutput():
     # clean_up_graph(posts_cleanup())
     # Below, I'm going to create an output; we can alter which methods we use when we change which learners we use
-    data = posts_cleanup()
+    data, unused = posts_cleanup()
 
     X_tr = data[0]
     y_tr = data[1]
@@ -28,7 +28,7 @@ def LinearRegressionOutput():
 
 def GradientRegressionOutput():
     # Below, I'm going to create an output; we can alter which methods we use when we change which learners we use
-    data = posts_cleanup() # this creates the matrices we want of training and test data
+    data, unused = posts_cleanup() # this creates the matrices we want of training and test data
     X_tr = data[0]
     y_tr = data[1]
     X_te = data[2]
