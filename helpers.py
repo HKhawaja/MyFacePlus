@@ -1,7 +1,5 @@
 from numpy import loadtxt
 import numpy as np
-from learners import *
-import sklearn
 from sklearn.linear_model import LinearRegression
 
 
