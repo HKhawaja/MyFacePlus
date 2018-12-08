@@ -27,7 +27,6 @@ def LinearRegressionOutput(helper):
     # This actually made an output and finished 8th with a score of 58
 
 def GradientRegressionOutput(helper):
-    # Below, I'm going to create an output; we can alter which methods we use when we change which learners we use
     data, unused = helper # this creates the matrices we want of training and test data
     X_tr = data[0]
     y_tr = data[1]
@@ -45,7 +44,6 @@ def GradientRegressionOutput(helper):
     return preds_output
     # this is called in main method to create scores
 
-
 if __name__ == "__main__":
     # assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
     # linear_regression = LinearRegressionOutput(posts_cleanup())
@@ -62,9 +60,21 @@ if __name__ == "__main__":
     #            delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
     # # RThis is gradient regression with median lat and lng; gives score of 25.376
 
-    medians_only_gradient_regression = GradientRegressionOutput(posts_cleanup_only_median())
-    np.savetxt('gradientBoostingOnlyMedians.txt', medians_only_gradient_regression, delimiter=',',
-               fmt='%1.3f', header="Id,Lat,Lon")
+    # medians_only_gradient_regression = GradientRegressionOutput(posts_cleanup_only_median())
+    # np.savetxt('gradientBoostingOnlyMedians.txt', medians_only_gradient_regression, delimiter=',',
+    #            fmt='%1.3f', header="Id,Lat,Lon")
+    # # this is a gradient regression using only median lat and lng; gives score of 26.43
+
+    # medians_linear_regression = LinearRegressionOutput(posts_cleanup_medians())
+    # np.savetxt('LinearOutputMedians.txt', medians_linear_regression, delimiter=',', fmt='%1.3f',
+    #            header="Id,Lat,Lon")
+    # # this is a linear regression including median lat and lng; gives score of 26.73
+
+    # medians_only_linear_regression = LinearRegressionOutput(posts_cleanup_only_median())
+    # np.savetxt('LinearOutputOnlyMedians.txt', medians_only_linear_regression, delimiter=',', fmt='%1.3f',
+    #            header="Id,Lat,Lon")
+    # # this is a linear regression using only median lat and lng; gives score of 26.76
+
 
     # added bagging to regression
     bagged_regression = BaggingRegressor(GradientRegressionOutput(posts_cleanup_only_median()))
