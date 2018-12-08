@@ -9,7 +9,7 @@ def linearRegressor(tr_X, tr_y, te_X):  # Code to play around with for performin
     return preds
 
 def gradientBooster(tr_X, tr_y, te_X):
-    GradientRegression = GradientBoostingRegressor()
+    GradientRegression = GradientBoostingRegressor(max_depth=5)
     gradientFit = GradientRegression.fit(X=tr_X, y=tr_y, sample_weight=None)
     gradient_preds = gradientFit.predict(te_X)
     return gradient_preds

@@ -54,11 +54,14 @@ if __name__ == "__main__":
     # np.savetxt('gradientBoostingOutput.txt', gradient_regression,
     #            delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
     # # This is gradient regression without graphs; gives score of ~46
-    #
-    # medians_gradient_regression = GradientRegressionOutput(posts_cleanup_medians())
-    # np.savetxt('gradientBoostingOutputMedians.txt', medians_gradient_regression,
-    #            delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
-    # # RThis is gradient regression with median lat and lng; gives score of 25.376
+
+    medians_gradient_regression = GradientRegressionOutput(posts_cleanup_medians())
+    np.savetxt('gradientBoostingOutputMedians.txt', medians_gradient_regression,
+               delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    print(medians_gradient_regression)
+    # RThis is gradient regression with median lat and lng (max_depth =3); gives score of 25.376
+    # Also tested gradient boosting with max depth of 1; gives score of 26.06
+    # And with max depth of 5; gives score of 24.88 (THAT'S THE BEST LET'S GO)
 
     # medians_only_gradient_regression = GradientRegressionOutput(posts_cleanup_only_median())
     # np.savetxt('gradientBoostingOnlyMedians.txt', medians_only_gradient_regression, delimiter=',',
@@ -76,6 +79,6 @@ if __name__ == "__main__":
     # # this is a linear regression using only median lat and lng; gives score of 26.76
 
 
-    # added bagging to regression
-    bagged_regression = BaggingRegressor(GradientRegressionOutput(posts_cleanup_only_median()))
-    np.savetxt('bagging_regression.txt', bagged_regression, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
+    # # added bagging to regression
+    # bagged_regression = BaggingRegressor(GradientRegressionOutput(posts_cleanup_only_median()))
+    # np.savetxt('bagging_regression.txt', bagged_regression, delimiter=',', fmt='%1.3f', header="Id,Lat,Lon")
