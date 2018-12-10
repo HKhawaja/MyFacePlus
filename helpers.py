@@ -200,7 +200,7 @@ def posts_cleanup_medians():
     for a in range(4):
         temp = te_init[:, a+1]
         X_te[:, a] = temp
-    X_te[:, 4] = te_lat_lng_friends[:, 1] #this should be all the test users and their friends' median lat and long
+    X_te[:, 4] = te_lat_lng_friends[:, 1] # this should be all the test users and their friends' median lat and long
     X_te[:, 5] = te_lat_lng_friends[:, 2]
     # ids_lat_lng: key: id and value: (latitude, longitude) for training set
     ids_lat_lng = {}
@@ -237,7 +237,7 @@ def posts_cleanup_only_median():
 
     te_init = loadtxt("posts_test.txt", comments='#', delimiter=",", unpack=False)
 
-    # Then, we do the same thing with the test data; start at column 1 and get a 6-column dataset with
+    # Then, we do the same thing with the test data; start at column 1 and get a 2-column dataset with
     # the columns as med_lat, med_long
     X_te_ids = np.array(te_init[:, 0]).astype(int) # This is a list of ids to use later
     X_te = np.empty((len(te_init), 2))
@@ -249,14 +249,8 @@ def posts_cleanup_only_median():
         ids_lat_lng[X_tr_ids[i]] = (y_tr[i][0], y_tr[i][1])
 
     return [X_tr, y_tr, X_te, X_te_ids], ids_lat_lng
-"""
-have you seen this? https://scikit-learn.org/stable/modules/multiclass.html#multioutput-regression 
-"""
 
 if __name__ == "__main__":
     assert 1 / 2 == 0.5, "Are you sure you're using python 3?"
-    #tr_file = open("posts_train.txt", "r")
-    #tr = tr_file.read().split(',')
-    #print(tr)
     a, b = posts_cleanup()
-    clean_up_graph(a, b)
+    clean_up_graph(a, b) # This should be called in Google Compute Engine, it takes a lot of time
