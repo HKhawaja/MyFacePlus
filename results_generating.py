@@ -5,7 +5,6 @@ from helpers import *
 from sklearn.ensemble import BaggingRegressor
 
 def LinearRegressionOutput(helper):
-    # clean_up_graph(posts_cleanup())
     # Below, I'm going to create an output; we can alter which methods we use when we change which learners we use
     data, unused = helper
 
@@ -23,8 +22,7 @@ def LinearRegressionOutput(helper):
     preds_output[:, 1] = y_lat_preds
     preds_output[:, 2] = y_long_preds
     return preds_output
-    # This saves as a text file
-    # This actually made an output and finished 8th with a score of 58
+    # this outputs the predictions for a linear regression with parameters defined in learners.py
 
 def GradientRegressionOutput(helper):
     data, unused = helper # this creates the matrices we want of training and test data
