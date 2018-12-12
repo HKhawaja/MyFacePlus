@@ -3,7 +3,7 @@ Project 4 for Machine Learning Course
 
 # How to Run
 Navigate to directory and run
- 
+
 `pip install -r requirements.txt`
 
 `python3 results_generating.py`
@@ -11,7 +11,7 @@ Navigate to directory and run
 Results for the best learner should be outputted in a txt file called `gradientBoostingOutputMedians.txt`
 
 In the outputted txt file, remove the `#` in the first line and
-round ids (first column) to integers [replace .000 with empty space]  
+round ids (first column) to integers [replace .000 with empty space]
 
 # Code description
 The code contains 3 files: `helpers.py`, `learners.py` and 'results_generating.py'
@@ -26,8 +26,5 @@ We perform a grid search using cross validation for the best hyperparameters bef
 Data processing, feature extraction from graph and creation of training and test sets.
 
 #Results_generating.py
-Runs the best learner we found (Gradient Boosting Regressor) and outputs the predictions 
-into a .txt file.  
-   
-
- 
+Runs the best learner we found (Gradient Boosting Regressor) and outputs the predictions
+into a .txt file.
